@@ -1,6 +1,6 @@
+"use client";
 import { type ReactNode } from "react";
 import clsx from "clsx";
-
 // ─── Badge Pill ───────────────────────────────────────────────────────────────
 interface BadgePillProps {
   icon: string;
@@ -73,27 +73,19 @@ export function SectionLabel({ children }: { children: ReactNode }) {
 
 // ─── Avatar ───────────────────────────────────────────────────────────────────
 export function Avatar({ name, photoURL, size = 40 }: { name: string; photoURL?: string | null; size?: number }) {
-  const initial = name?.charAt(0)?.toUpperCase() ?? "?";
   if (photoURL) {
     return (
       <img src={photoURL} alt={name} width={size} height={size}
-        className="rounded-full border border-border object-cover shrink-0"
-        style={{ width: size, height: size }} />
+        className="rounded-full border border-border object-cover shrink-0" style={{ width: size, height: size }} />
     );
   }
   return (
-    <div
-      className="rounded-full border border-border flex items-center justify-center font-mono font-bold shrink-0"
-      style={{
-        width: size, height: size, fontSize: size * 0.4,
-        background: "linear-gradient(135deg, #2a9e3e, #1a5c2a)",
-        color: "#0a0e0a",
-      }}>
-      {initial}
+    <div className="rounded-full border border-border flex items-center justify-center font-mono font-bold shrink-0"
+      style={{ width: size, height: size, fontSize: size * 0.4, background: "linear-gradient(135deg,#2a9e3e,#1a5c2a)", color: "#0a0e0a" }}>
+      {name?.charAt(0)?.toUpperCase() ?? "?"}
     </div>
   );
 }
-
 // ─── Terminal Box ─────────────────────────────────────────────────────────────
 export function Terminal({ lines }: { lines: string[] }) {
   return (
