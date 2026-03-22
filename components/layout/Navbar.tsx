@@ -60,7 +60,7 @@ export function Navbar() {
                     className="rounded-full border border-border" />
                 )}
                 <span className="font-mono text-xs text-text-dim truncate max-w-[120px]">
-                  {session.user.name?.split(" ")[0]}
+                  {session.user.name}
                 </span>
               </div>
               <button onClick={() => signOut({ callbackUrl: "/login" })}
