@@ -38,6 +38,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     });
 
     if (action === "approved") {
+        const badgeSnap = await adminDb.collection("badges").doc(reqData.badgeId).get();
+  const badgeData = badgeSnap.data();
       const earnedRef = adminDb
         .collection("users")
         .doc(reqData.userId)
@@ -52,6 +54,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         badgeIcon: reqData.badgeIcon,
         badgeImageURL: reqData.badgeImageURL ?? null,
         badgeColor: reqData.badgeColor ?? "#39d353",
+         badgeCategory: badgeData?.category ?? "",
         badgePoints: reqData.badgePoints,
         seasonId: reqData.seasonId,
         seasonName: seasonSnap.data()?.name ?? "",
@@ -78,6 +81,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
           badgeColor: reqData.badgeColor ?? "#39d353",
           badgePoints: reqData.badgePoints,
           reviewNote: reviewNote?.trim(),
+          discordHandle: reqData.discordHandle,
         });
 
         await notifyCongratulations({
@@ -86,6 +90,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
           badgeIcon: reqData.badgeIcon,
           badgeColor: reqData.badgeColor ?? "#39d353",
           badgePoints: reqData.badgePoints,
+          discordUsername: reqData.discordHandle
         })
       } else {
         await notifyRequestRejected({
@@ -93,6 +98,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
           badgeName: reqData.badgeName,
           badgeIcon: reqData.badgeIcon,
           reviewNote: reviewNote?.trim(),
+                    discordHandle: reqData.discordHandle,
+
         });
       }
     } catch (err) {

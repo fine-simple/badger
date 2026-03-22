@@ -72,10 +72,12 @@ export async function POST(req: NextRequest) {
       badgeIcon: badge.icon,
       badgeImageURL: badge.imageURL ?? null,
       badgeColor: badge.color ?? "#39d353",
+       badgeCategory: badge.category ?? "",
       badgePoints: badge.points,
       seasonId: badge.seasonId,
       userId: session.user.uid,
       userName: user?.name ?? session.user.name,
+      discordHandle: user?.discordHandle ,
       userPhotoURL: user?.photoURL ?? session.user.image ?? null,
       userEmail: user?.email ?? session.user.email,
       note: note.trim(),
@@ -94,6 +96,7 @@ export async function POST(req: NextRequest) {
         badgeColor: badge.color ?? "#39d353",
         note: note.trim(),
         requestId: ref.id,
+        discordHandle : user?.discordHandle,
       });
 
     } catch (err) {

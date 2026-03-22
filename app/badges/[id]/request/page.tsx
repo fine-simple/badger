@@ -155,10 +155,10 @@ useEffect(() => {
           disabled={!note.trim() || submitting}
           className="w-full mt-5 py-3 font-mono text-sm font-bold rounded-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           style={{
-            background: note.trim() && !submitting ? "#39d353" : undefined,
+            background: note.trim() && !submitting ? "#43c058" : undefined,
             backgroundColor: !note.trim() || submitting ? "#3d5c36" : undefined,
-            color: "#0a0e0a",
-            boxShadow: note.trim() && !submitting ? "0 0 20px rgba(57,211,83,0.2)" : "none",
+            color: "#71df71",
+            boxShadow: note.trim() && !submitting ? "0 0 20px rgba(48, 213, 76, 0.21)" : "none",
           }}>
           {submitting ? "Submitting..." : "$ submit --request"}
         </button>

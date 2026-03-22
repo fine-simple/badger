@@ -38,17 +38,21 @@ export async function notifyNewRequest(opts: {
   badgeColor: string;
   note: string;
   requestId: string;
+  discordHandle: string;
 }) {
   const appUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
 
   await sendWebhook({
-    content:"@everyone",
+    content:`**${opts.memberName}** **@${opts.discordHandle}** has been awarded **${opts.badgeIcon} ${opts.badgeName}**`,
+      allowed_mentions: {
+    parse: ["everyone", "roles", "users"],
+  },
     embeds: [
       {
         title: `${opts.badgeIcon} New Badge Request`,
         color: parseInt(opts.badgeColor.replace("#", ""), 16),
         fields: [
-          { name: "👤 Member", value: `${opts.memberName} (${opts.memberEmail})`, inline: true },
+          { name: "👤 Member", value: `${opts.memberName} (${opts.memberEmail}) (@${opts.discordHandle})`, inline: true },
           { name: "🏅 Badge", value: opts.badgeName, inline: true },
           { name: "📝 Proof / Note", value: opts.note },
         ],
@@ -81,13 +85,17 @@ export async function notifyRequestApproved(opts: {
   badgeColor: string;
   badgePoints: number;
   reviewNote?: string;
+  discordHandle: string;
 }) {
   await sendWebhook({
-    content: "@everyone",
+    content: `@everyone **${opts.memberName}** **@${opts.discordHandle}** has been awarded **${opts.badgeIcon} ${opts.badgeName}** `,
+      allowed_mentions: {
+    parse: ["everyone", "roles", "users"],
+  },
     embeds: [
       {
         title: `✅ Badge Approved`,
-        description: `**${opts.memberName}** has been awarded **${opts.badgeIcon} ${opts.badgeName}**`,
+        description: `**${opts.memberName}** **@${opts.discordHandle}** has been awarded **${opts.badgeIcon} ${opts.badgeName}**`,
         color: parseInt(opts.badgeColor.replace("#", ""), 16),
         fields: [
           { name: "Points Awarded", value: `+${opts.badgePoints} pts`, inline: true },
@@ -106,12 +114,17 @@ export async function notifyRequestRejected(opts: {
   badgeName: string;
   badgeIcon: string;
   reviewNote?: string;
+    discordHandle: string;
+
 }) {
   await sendWebhook({
+      allowed_mentions: {
+    parse: ["everyone", "roles", "users"],
+  },
     embeds: [
       {
         title: `❌ Badge Request Rejected`,
-        description: `**${opts.memberName}**'s request for **${opts.badgeIcon} ${opts.badgeName}** was rejected`,
+        description: `**${opts.memberName}**'s  **@${opts.discordHandle}** request for **${opts.badgeIcon} ${opts.badgeName}** was rejected`,
         color: 0xe05252,
         fields: [
           ...(opts.reviewNote ? [{ name: "Reason", value: opts.reviewNote }] : []),
@@ -130,10 +143,14 @@ export async function notifyCongratulations(opts: {
   badgeIcon: string;
   badgeColor: string;
   badgePoints: number;
+  discordUsername: string;
 }) {
   await sendWebhookCongratulation({
-    content: `:tada:Congratulations ${opts.memberName} You've earned the **${opts.badgeName}** :trophy: +${opts.badgePoints} pts Keep up the good work!
- @Linux`,
+
+    content: `:tada:Congratulations ${opts.memberName} You've earned the **${opts.badgeName}** :trophy: +${opts.badgePoints} pts Keep up the good work!`,
+      allowed_mentions: {
+    parse: ["everyone", "roles", "users"],
+  },
     embeds: [
       {
         title: `✅ Badge Approved`,

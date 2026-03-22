@@ -64,6 +64,7 @@ export interface EarnedBadge {
   badgeIcon: string;
   badgeImageURL?: string | null;
   badgeColor: string;
+  badgeCategory: string; 
   badgePoints: number;
   seasonId: string;
   seasonName: string;

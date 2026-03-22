@@ -8,6 +8,8 @@ import type { ClubUser, EarnedBadge, BadgeRequest } from "@/types";
 import { ProfileClient } from "./ProfileClient";
 
 async function getProfileData(uid: string) {
+  if (!uid) return null;
+
   const [userSnap, requestsSnap, leaderSnap] = await Promise.all([
     adminDb.collection("users").doc(uid).get(),
     adminDb.collection("badgeRequests").where("userId", "==", uid).orderBy("createdAt", "desc").get(),
@@ -20,16 +22,33 @@ async function getProfileData(uid: string) {
 
   if (!userSnap.exists) return null;
 
+  const earnedBadges = earnedSnap.docs.map(d => ({ id: d.id, ...d.data() })) as EarnedBadge[];
+
+  // Fetch all badge details in one parallel query
+  const badgeIds = [...new Set(earnedBadges.map(b => b.badgeId))];
+  const badgeSnaps = await Promise.all(
+    badgeIds.map(id => adminDb.collection("badges").doc(id).get())
+  );
+  const badgeMap = Object.fromEntries(
+    badgeSnaps.map(snap => [snap.id, snap.data()])
+  );
+
+  // Enrich earned badges with latest category from badges collection
+  const enrichedBadges = earnedBadges.map(b => ({
+    ...b,
+    badgeCategory: badgeMap[b.badgeId]?.category ?? "",
+  }));
+
   const user = { uid: userSnap.id, ...userSnap.data() } as ClubUser & {
     discordHandle?: string;
     githubUsername?: string;
   };
-  const earnedBadges = earnedSnap.docs.map(d => ({ id: d.id, ...d.data() })) as EarnedBadge[];
   const requests = requestsSnap.docs.map(d => ({ id: d.id, ...d.data() })) as BadgeRequest[];
   const rank = leaderSnap.docs.findIndex(d => d.id === uid) + 1;
 
-  return { user, earnedBadges, requests, rank };
+  return { user, earnedBadges: enrichedBadges, requests, rank };
 }
+
 
 export default async function ProfilePage({ params }: { params: Promise<{ uid: string }> }) {
   const { uid } = await params;
@@ -64,16 +83,50 @@ export default async function ProfilePage({ params }: { params: Promise<{ uid: s
       <div className="mb-6">
         <SectionLabel>Earned Badges</SectionLabel>
         {earnedBadges.length === 0 && <EmptyState icon="🏅" message="No badges earned yet." />}
-        {Object.entries(bySeason).map(([seasonName, badges]) => (
-          <div key={seasonName} className="mb-5">
-            <p className="font-mono text-xs text-text-muted mb-3 tracking-wider">{seasonName}</p>
-            <div className="flex flex-wrap gap-2">
-              {badges.map(b => (
-                <BadgePill key={b.id} icon={b.badgeIcon} name={b.badgeName} points={b.badgePoints} earned />
-              ))}
-            </div>
-          </div>
-        ))}
+       {Object.entries(bySeason).map(([seasonName, badges]) => (
+  <div key={seasonName} className="mb-6">
+    <p className="font-mono text-xs text-text-muted mb-3 tracking-wider">{seasonName}</p>
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+      {badges.map(b =>  (
+        
+<div key={b.id}
+  className="rounded-xl p-4 flex flex-col items-center gap-2 text-center"
+  style={{
+    background: `${b.badgeColor}12`,
+    border: `1.5px solid ${b.badgeColor}40`,
+  }}>
+
+  {/* Icon */}
+  <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+    style={{ background: `${b.badgeColor}25`, border: `1.5px solid ${b.badgeColor}60` }}>
+    {b.badgeImageURL
+      ? <img src={b.badgeImageURL} alt={b.badgeName} className="w-8 h-8 object-cover rounded-lg" />
+      : b.badgeIcon
+    }
+  </div>
+
+  {/* Name */}
+  <p className="font-mono text-xs font-semibold leading-tight"
+    style={{ color: b.badgeColor }}>{b.badgeName}</p>
+
+{/* Category */}
+<span className="font-mono text-[10px] px-2 py-0.5 rounded-md"
+  style={{ background: `${b.badgeColor}15`, color: `${b.badgeColor}cc`, border: `1px solid ${b.badgeColor}30` }}>
+  {b.badgeCategory}
+</span>
+  {/* Points */}
+  <p className="font-mono text-xs" style={{ color: `${b.badgeColor}99` }}>+{b.badgePoints} pts</p>
+
+  {/* Earned tag */}
+  <span className="font-mono text-[10px] px-2 py-0.5 rounded-full"
+    style={{ background: `${b.badgeColor}20`, color: b.badgeColor, border: `1px solid ${b.badgeColor}40` }}>
+    earned
+  </span>
+</div>
+      ))}
+    </div>
+  </div>
+))}
       </div>
 
       {/* Request history */}
