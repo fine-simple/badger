@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 # 🐧 Badger
 
 A full-stack Next.js 16 web app for student clubs to manage season-based badges, member requests, profiles, and a leaderboard.
 
 **Stack:** Next.js 16 · Firebase (Firestore + Auth) · NextAuth.js · Tailwind CSS · TypeScript · Vercel
+=======
+# 🐧 Club Badge System
+
+A full-stack Next.js 14 web app for student clubs to manage season-based badges, member requests, profiles, and a leaderboard.
+
+**Stack:** Next.js 14 · Firebase (Firestore + Auth) · NextAuth.js · Tailwind CSS · TypeScript · Vercel
+>>>>>>> 4c7b7cf (resolve conflict)
 
 ---
 
@@ -134,6 +142,7 @@ Open [http://localhost:3000](http://localhost:3000)
 ---
 
 ## 👑 Making Yourself an Admin
+<<<<<<< HEAD
 
 After signing in for the first time:
 
@@ -234,3 +243,103 @@ club-badge-system/
 | Admin emails | Manually set `role: "admin"` in Firestore |
 
 
+=======
+
+After signing in for the first time:
+
+1. Go to **Firebase Console** → **Firestore** → `users` collection
+2. Find your user document (it was created automatically on first login)
+3. Change the `role` field from `"member"` to `"admin"`
+4. Refresh the site — you'll now see the `~/admin` link in the navbar
+
+---
+
+## 🌐 Deploy to Vercel
+
+### Option A — Vercel CLI
+
+```bash
+npm install -g vercel
+vercel login
+vercel
+```
+
+### Option B — GitHub + Vercel Dashboard
+
+1. Push your code to a GitHub repository
+2. Go to [vercel.com](https://vercel.com) → **New Project** → Import your repo
+3. Framework: **Next.js** (auto-detected)
+4. Add all environment variables from `.env.local` in the Vercel dashboard
+5. For `NEXTAUTH_URL`, set it to `https://YOUR_APP.vercel.app`
+6. For `FIREBASE_ADMIN_PRIVATE_KEY`, paste the full key including `\n` characters
+7. Click **Deploy**
+
+### After deploying
+
+- Go back to Google Cloud Console → OAuth credentials → add your Vercel URL to **Authorized redirect URIs**:
+  `https://YOUR_APP.vercel.app/api/auth/callback/google`
+- Go to Firebase Console → Authentication → **Authorized domains** → add your Vercel domain
+
+---
+
+## 📁 Project Structure
+
+```
+club-badge-system/
+├── app/
+│   ├── page.tsx                    # Home / landing
+│   ├── login/page.tsx              # Google sign-in
+│   ├── badges/
+│   │   ├── page.tsx                # Browse season badges
+│   │   └── [id]/request/page.tsx  # Submit badge request
+│   ├── leaderboard/page.tsx        # Ranked members
+│   ├── profile/[uid]/page.tsx      # Member profile
+│   ├── admin/
+│   │   ├── page.tsx                # Admin dashboard
+│   │   ├── requests/page.tsx       # Approve / reject
+│   │   └── seasons/page.tsx        # Create seasons & badges
+│   └── api/
+│       ├── auth/[...nextauth]/     # NextAuth handler
+│       ├── badges/route.ts         # Badge CRUD
+│       ├── requests/
+│       │   ├── route.ts            # Submit / list requests
+│       │   └── [id]/route.ts       # Approve / reject
+│       └── admin/seasons/route.ts  # Season management
+├── components/
+│   ├── layout/Navbar.tsx           # Top nav
+│   └── ui/index.tsx                # Shared components
+├── lib/
+│   ├── firebase.ts                 # Client SDK
+│   ├── firebase-admin.ts           # Admin SDK (server only)
+│   ├── auth.ts                     # NextAuth config
+│   └── db.ts                       # Firestore helpers
+├── types/
+│   ├── index.ts                    # All TypeScript types
+│   └── next-auth.d.ts              # Session augmentation
+├── middleware.ts                   # Route protection
+├── .env.example                    # Env var template
+└── vercel.json                     # Vercel config
+```
+
+---
+
+## 🔄 Typical Admin Workflow
+
+1. **Start a season** → Admin panel → Seasons → Create "Spring 2025" → Set active
+2. **Add badges** → Select the season → Fill in name, icon, description, points, category
+3. **Members sign in** → Browse badges → Submit requests with proof
+4. **Admins review** → Admin panel → Requests → Approve or Reject (with optional note)
+5. **Points update automatically** → Leaderboard re-ranks instantly
+
+---
+
+## 🛠️ Customization
+
+| What to change | Where |
+|---|---|
+| Club name / branding | `app/layout.tsx`, `components/layout/Navbar.tsx` |
+| Color theme | `tailwind.config.js` and `app/globals.css` |
+| Badge categories | `types/index.ts` → `BadgeCategory` + `app/badges/page.tsx` |
+| Leaderboard size | `app/leaderboard/page.tsx` → change `limit(50)` |
+| Admin emails | Manually set `role: "admin"` in Firestore |
+>>>>>>> 4c7b7cf (resolve conflict)
