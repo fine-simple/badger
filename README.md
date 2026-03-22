@@ -1,8 +1,8 @@
-# 🐧 Club Badge System
+# 🐧 Badger
 
-A full-stack Next.js 14 web app for student clubs to manage season-based badges, member requests, profiles, and a leaderboard.
+A full-stack Next.js 16 web app for student clubs to manage season-based badges, member requests, profiles, and a leaderboard.
 
-**Stack:** Next.js 14 · Firebase (Firestore + Auth) · NextAuth.js · Tailwind CSS · TypeScript · Vercel
+**Stack:** Next.js 16 · Firebase (Firestore + Auth) · NextAuth.js · Tailwind CSS · TypeScript · Vercel
 
 ---
 
@@ -232,3 +232,5 @@ club-badge-system/
 | Badge categories | `types/index.ts` → `BadgeCategory` + `app/badges/page.tsx` |
 | Leaderboard size | `app/leaderboard/page.tsx` → change `limit(50)` |
 | Admin emails | Manually set `role: "admin"` in Firestore |
+
+
