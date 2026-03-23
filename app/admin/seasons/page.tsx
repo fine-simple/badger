@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { Card, SectionLabel } from "@/components/ui";
+import { EditBadgeModal } from "@/components/ui/EditBadgeModal";
 import type { Season, Badge } from "@/types";
 
 const PRESET_COLORS = [
@@ -50,6 +51,9 @@ export default function AdminSeasonsPage() {
 
   // Activate
   const [activating, setActivating] = useState<string | null>(null);
+
+  // Edit badge
+  const [editingBadge, setEditingBadge] = useState<Badge | null>(null);
 
   const fetchData = useCallback(async () => {
     const [sRes, bRes] = await Promise.all([
@@ -379,6 +383,10 @@ export default function AdminSeasonsPage() {
                             {b.category}
                           </span>
                           <span className="font-mono text-sm font-bold" style={{ color: b.color }}>{b.points}pts</span>
+                          <button onClick={() => setEditingBadge(b)}
+                            className="font-mono text-[10px] text-text-dim hover:text-accent border border-border hover:border-accent/30 px-2 py-0.5 rounded transition-all">
+                            ✏️ Edit
+                          </button>
                         </div>
                       </Card>
                     ))}
@@ -395,6 +403,18 @@ export default function AdminSeasonsPage() {
           )}
         </div>
       </div>
+
+      {/* Edit Badge Modal */}
+      {editingBadge && (
+        <EditBadgeModal
+          badge={editingBadge}
+          onClose={() => setEditingBadge(null)}
+          onSaved={(updated) => {
+            setBadges(prev => prev.map(b => b.id === updated.id ? updated : b));
+            setEditingBadge(null);
+          }}
+        />
+      )}
     </div>
   );
 }
