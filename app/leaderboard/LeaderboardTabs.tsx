@@ -116,9 +116,7 @@ export function LeaderboardTabs({ active, alumni }: { active: Member[]; alumni: 
         </button>
       </div>
 
-      {/* Podium — only for active */}
-      {tab === "active" && <Podium members={active} />}
-
+<Podium members={members} />
       {/* Table */}
       <MemberTable members={members} />
     </>
