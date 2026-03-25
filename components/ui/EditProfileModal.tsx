@@ -103,7 +103,7 @@ await update({name})
               value={github}
               onChange={e => setGithub(e.target.value)}
               placeholder="yourusername"
-              className="w-full bg-bg border border-border rounded-lg pl-[88px] pr-3 py-2.5 font-mono text-sm text-text-base outline-none focus:border-accent/40 transition-colors placeholder:text-text-muted"
+              className="w-full bg-bg border border-border rounded-lg pl-26 pr-3 py-2.5 font-mono text-sm text-text-base outline-none focus:border-accent/40 transition-colors placeholder:text-text-muted"
             />
           </div>
         </div>
